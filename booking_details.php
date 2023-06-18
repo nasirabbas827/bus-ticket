@@ -82,68 +82,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Booking Details - Bus Management</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+
+
+body{
+  background-color: #f2f2f2;
+}
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    table {
+      margin-bottom: 30px;
+    }
+
+    th {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-<div>
-    <p>Welcome, <?php echo $user_name; ?>!</p>
-    <p>Email: <?php echo $user_email; ?></p>
-    <p>Phone: <?php echo $user_phone; ?></p>
+<?php include('navbar.php') ?>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col">
+      <p class="lead">Welcome, <?php echo $user_name; ?>!</p>
+      <p>User Email: <?php echo $user_email; ?></p>
+      <p>User Phone Number: <?php echo $user_phone; ?></p>
+    </div>
   </div>
-  <h2>Booking Details - Bus Management</h2>
+</div>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Booking Details - Bus Management</h2>
   <h3>Booking Information</h3>
-  <table>
-    <tr>
-      <th>Ticket ID</th>
-      <th>Via City</th>
-      <th>Destination</th>
-      <th>Bus Name</th>
-      <th>Bus Number</th>
-      <th>Departure Date</th>
-      <th>Departure Time</th>
-      <th>Ticket Price</th>
-      <th>Number of Tickets</th>
-      <th>Total Price</th>
-    </tr>
-    <tr>
-      <td><?php echo $booking['id']; ?></td>
-      <td><?php echo $route['via_city']; ?></td>
-      <td><?php echo $route['destination']; ?></td>
-      <td><?php echo $route['bus_name']; ?></td>
-      <td><?php echo $route['bus_number']; ?></td>
-      <td><?php echo $route['departure_date']; ?></td>
-      <td><?php echo $route['departure_time']; ?></td>
-      <td><?php echo $ticket_price; ?></td>
-      <td><?php echo $booking['num_tickets']; ?></td>
-      <td><?php echo $booking['total_price']; ?></td>
-    </tr>
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Ticket ID</th>
+        <th>Via City</th>
+        <th>Destination</th>
+        <th>Bus Name</th>
+        <th>Bus Number</th>
+        <th>Departure Date</th>
+        <th>Departure Time</th>
+        <th>Ticket Price</th>
+        <th>Number of Tickets</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><?php echo $booking['id']; ?></td>
+        <td><?php echo $route['via_city']; ?></td>
+        <td><?php echo $route['destination']; ?></td>
+        <td><?php echo $route['bus_name']; ?></td>
+        <td><?php echo $route['bus_number']; ?></td>
+        <td><?php echo $route['departure_date']; ?></td>
+        <td><?php echo $route['departure_time']; ?></td>
+        <td><?php echo $ticket_price; ?></td>
+        <td><?php echo $booking['num_tickets']; ?></td>
+        <td><?php echo $booking['total_price']; ?></td>
+      </tr>
+    </tbody>
   </table>
 
-  <h3>Payment Options</h3>
+  <h3 class="mt-3">Payment Options</h3>
   <form action="" method="post">
-    <input type="radio" name="payment_option" value="easy_paisa"> Easy Paisa<br>
-    <input type="radio" name="payment_option" value="cash_on_counter"> Cash on Counter<br>
-    <button type="submit" name="submit_payment">Submit Payment</button>
+  <div class="col-auto">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="payment_option" id="payment_option_easy_paisa" value="easy_paisa">
+        <label class="form-check-label" for="payment_option_easy_paisa">Easy Paisa</label>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="payment_option" id="payment_option_cash_on_counter" value="cash_on_counter">
+        <label class="form-check-label" for="payment_option_cash_on_counter">Cash on Counter</label>
+      </div>
+    </div>
+    <div class="col-auto">
+      <button type="submit" name="submit_payment" class="btn btn-primary">Submit Payment</button>
+    </div>
   </form>
+</div>
 
-  <?php
-  if (isset($_POST['submit_payment'])) {
-    $payment_option = $_POST['payment_option'];
-    if ($payment_option === 'easy_paisa') {
-      // Redirect to Easy Paisa page
-      header("Location: easy_paisa_payment.php?booking_id=" . $booking['id']);
-      exit;
-    } elseif ($payment_option === 'cash_on_counter') {
-      // Redirect to next page with all details and payment method
-      header("Location: counter_payment.php?booking_id=" . $booking['id']);
-      exit;
-    }
-  }
-  ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

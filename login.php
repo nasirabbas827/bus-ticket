@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     session_start();
                     $_SESSION["id"] = $id;
                     $_SESSION["email"] = $email;
-                    header("location: index.php");
+                    header("location: home.php");
                 } else {
                     // password is incorrect
                     $password_err = "The password you entered is incorrect.";
@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+<?php include('navbar.php') ?>
 
     <div class="container mt-5">
         <h2 class="text-center">User Login</h2>

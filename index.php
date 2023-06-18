@@ -1,128 +1,83 @@
 <?php
-require 'config.php';
+session_start();
 
 // Check if the user is already logged in
-if (!isset($_SESSION['email'])) {
-  // Redirect to the login page
-  header("Location: login.php");
+if (isset($_SESSION['email'])) {
+  // User is logged in, redirect to another page
+  header("Location: home.php"); 
   exit;
 }
-
-// Retrieve user details from the session
-$user_email = $_SESSION['email'];
-
-// Fetch user details from the database based on the email
-$sql = "SELECT * FROM users WHERE email = '$user_email'";
-$result = $conn->query($sql);
-
-if ($result !== false && $result->num_rows > 0) {
-    // Fetch the user record
-    $user = $result->fetch_assoc();
-    $user_name = $user['username'];
-    $user_phone = $user['phone'];
-} else {
-    // Handle error if user record not found
-    echo "Error retrieving user details.";
-    exit;
-}
-
-// Fetch route records from the database
-$sql = "SELECT * FROM routes";
-$result = $conn->query($sql);
-$routeList = [];
-
-if ($result !== false && $result->num_rows > 0 && $result instanceof mysqli_result) {
-    // Fetch route records into an array
-    while ($row = $result->fetch_assoc()) {
-        $routeList[] = $row;
-    }
-} else {
-    echo "No routes found.";
-}
-
-// Book Route
-if (isset($_POST['book'])) {
-    $user_email = $_SESSION['email'];
-    $user_name = $user['username']; // Updated
-    $user_number = $user['phone']; // Updated
-    $route_id = $_POST['route_id'];
-    $num_tickets = $_POST['num_tickets'];
-
-    // Fetch the selected route details from the database
-    $sql = "SELECT * FROM routes WHERE id = $route_id";
-    $result = $conn->query($sql);
-
-    if ($result !== false && $result->num_rows > 0) {
-        $route = $result->fetch_assoc();
-        $ticket_price = $route['ticket_price'];
-
-        // Calculate the total price
-        $total_price = $num_tickets * $ticket_price;
-
-        // Insert the booking details into the database
-        $sql = "INSERT INTO bookings (user_email, user_name, user_number, route_id, num_tickets, total_price)
-                VALUES ('$user_email', '$user_name', '$user_number', $route_id, $num_tickets, $total_price)";
-
-        if ($conn->query($sql) === TRUE) {
-            // Redirect to the booking details page after successful booking
-            header("Location: booking_details.php?booking_id=" . $conn->insert_id);
-            exit();
-        } else {
-            echo "Error booking route: " . $conn->error;
-        }
-    } else {
-        echo "Selected route not found.";
-    }
-}
-
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 <head>
-  <title>Routes - Bus Management</title>
+  <meta charset="utf-8">
+  <title>Online Bus Ticketing System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    body {
+      background-image: url(image/1.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    .home_details {
+      color: #fff;
+      font-family: inherit;
+      font-size: 74px;
+      padding: 162px 5px 5px 185px;
+    }
+    .font {
+      color: #F9522E;
+    }
+    .btnHome {
+      font-family: inherit;
+      background-color: #F9522E;
+      padding: 13px 44px 13px 44px;
+      font-size: 18px;
+      border-style: none;
+    }
+    .btnHome:hover {
+      background-color: orange;
+      cursor: pointer;
+    }
+    .section {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .section video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+    }
+  </style>
 </head>
 <body>
-<div>
-    <p>Welcome, <?php echo $user_name; ?>!</p>
-    <p>Email: <?php echo $user_email; ?></p>
-    <p>Phone: <?php echo $user_phone; ?></p>
+  <div id="container">
+    <!-- Navbar -->
+    <?php include "navbar.php"; ?>
+    <h1 class="home_details">Your Bus Pass. Anytime. <br><font class="font">Anywhere..</font><br>
+      <a href="register.php">
+        <button class="btnHome">SIGN UP NOW</button>
+      </a>
+    </h1>
   </div>
-  <h2>Routes - Bus Management</h2>
-
-  <h3>Available Routes</h3>
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Via City</th>
-      <th>Destination</th>
-      <th>Bus Name</th>
-      <th>Bus Number</th>
-      <th>Departure Date</th>
-      <th>Departure Time</th>
-      <th>Ticket Price</th>
-      <th>Action</th>
-    </tr>
-    <?php foreach ($routeList as $route) { ?>
-      <tr>
-        <td><?php echo $route['id']; ?></td>
-        <td><?php echo $route['via_city']; ?></td>
-        <td><?php echo $route['destination']; ?></td>
-        <td><?php echo $route['bus_name']; ?></td>
-        <td><?php echo $route['bus_number']; ?></td>
-        <td><?php echo $route['departure_date']; ?></td>
-        <td><?php echo $route['departure_time']; ?></td>
-        <td><?php echo $route['ticket_price']; ?></td>
-        <td>
-          <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <input type="hidden" name="route_id" value="<?php echo $route['id']; ?>">
-            <label for="num_tickets">Number of Tickets:</label>
-            <input type="number" id="num_tickets" name="num_tickets" required>
-            <button type="submit" name="book">Book Now</button>
-          </form>
-        </td>
-      </tr>
-    <?php } ?>
-  </table>
+  <div class="section">
+    <video autoplay loop muted class="section">
+      <source src="video/video.mp4" type="video/mp4">
+    </video>
+  </div>
+  <!-- Footer -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -103,6 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+<?php include('navbar.php') ?>
 
     <div class="container mt-5">
         <h2 class="text-center">User Registration</h2>
